@@ -13,149 +13,170 @@
         <v-expansion-panel-text>
           <div class="d-flex justify-space-between">
             <v-checkbox label="Onderwerp" v-model="onderwerpToggle" />
-            <v-checkbox label="Apparaat" v-model="apparaatToggle" />
+            <v-checkbox label="Installatie" v-model="installatieToggle" />
             <v-checkbox label="Text" v-model="textToggle" />
-            <!-- <v-checkbox label="OC Punt" v-model="oCPunt" /> -->
             <v-checkbox label="Datum" v-model="datumToggle" />
           </div>
           <v-row>
             <!-- Onderwerplijst -->
 
-            <v-col cols="4" v-if="onderwerpToggle">
-              <v-label class="text-h6 mb-2">Onderwerp</v-label>
-              <v-radio-group v-model="onderwerp" density="compact">
-                <v-radio
-                  label="Algemene mededeling"
-                  value="Algemene mededeling"
-                ></v-radio>
-                <v-radio label="Blokkade" value="Blokkade"></v-radio>
-                <v-radio label="Storing" value="Storing"></v-radio>
-                <v-radio label="Valspar" value="Valspar"></v-radio>
-                <v-radio label="HSE" value="HSE"></v-radio>
-                <v-radio
-                  label="Geplande werkzaamheden"
-                  value="Geplande werkzaamheden"
-                ></v-radio>
-              </v-radio-group>
-            </v-col>
+            <transition name="fade-slide" mode="out-in">
+              <v-col cols="4" v-if="onderwerpToggle">
+                <v-label class="text-h6 mb-2">Onderwerp</v-label>
+                <v-radio-group v-model="onderwerp" density="compact">
+                  <v-radio
+                    label="Algemene mededeling"
+                    value="Algemene mededeling"
+                  ></v-radio>
+                  <v-radio label="Blokkade" value="Blokkade"></v-radio>
+                  <v-radio label="Storing" value="Storing"></v-radio>
+                  <v-radio label="Valspar" value="Valspar"></v-radio>
+                  <v-radio label="HSE" value="HSE"></v-radio>
+                  <v-radio
+                    label="Geplande werkzaamheden"
+                    value="Geplande werkzaamheden"
+                  ></v-radio>
+                </v-radio-group>
+              </v-col>
+            </transition>
 
             <!-- Apparatenlijst -->
 
-            <v-col cols="3" v-if="apparaatToggle">
-              <v-label class="text-h6 mb-2">Apparaat</v-label>
-              <v-radio-group v-model="machine" density="compact">
-                <v-radio label="Droger" value="Droger"></v-radio>
-                <v-radio label="Kristallisator" value="Kris"></v-radio>
-                <v-radio label="3C-Bunker" value="3C-Bunker"></v-radio>
-                <v-radio label="Menger" value="Menger"></v-radio>
-                <v-radio label="Buhler" value="Buhler"></v-radio>
-                <v-radio label="Overig" value=""></v-radio>
-              </v-radio-group>
-            </v-col>
+            <transition name="fade-slide" mode="out-in">
+              <v-col cols="3" v-if="installatieToggle">
+                <v-label class="text-h6 mb-2">Installatie</v-label>
+                <v-radio-group v-model="machine" density="compact">
+                  <v-radio label="Droger" value="Droger"></v-radio>
+                  <v-radio label="Kristallisator" value="Kris"></v-radio>
+                  <v-radio label="3C-Bunker" value="3C-Bunker"></v-radio>
+                  <v-radio label="Menger" value="Menger"></v-radio>
+                  <v-radio label="Buhler" value="Buhler"></v-radio>
+                  <v-radio label="Overig" value=""></v-radio>
+                </v-radio-group>
+              </v-col>
+            </transition>
 
             <!-- Drogerlijst -->
 
-            <v-col v-if="machine === 'Droger'" cols="2">
-              <v-label class="text-h6 mb-2">Droger letter</v-label>
-              <v-radio-group
-                v-model="drogerLetter"
-                v-for="l in drogerLetterLijst"
-                :key="l"
-                density="compact"
-                hide-details
-              >
-                <v-radio :label="l" :value="l" />
-              </v-radio-group>
-            </v-col>
-            <v-col v-if="machine === 'Droger'" cols="2">
-              <v-label class="text-h6 mb-2">Droger cijfer</v-label>
-              <v-radio-group
-                v-model="drogerCijfer"
-                v-for="c in drogerCijferLijst"
-                :key="c"
-                density="compact"
-                hide-details
-              >
-                <v-radio :label="c" :value="c" />
-              </v-radio-group>
-            </v-col>
+            <transition name="fade-slide" mode="out-in">
+              <v-col v-if="machine === 'Droger'" cols="2">
+                <v-label class="text-h6 mb-2">Droger rij</v-label>
+                <v-radio-group
+                  v-model="drogerLetter"
+                  v-for="l in drogerLetterLijst"
+                  :key="l"
+                  density="compact"
+                  hide-details
+                >
+                  <v-radio :label="l" :value="l" />
+                </v-radio-group>
+              </v-col>
+            </transition>
+            <transition name="fade-slide" mode="out-in">
+              <v-col v-if="machine === 'Droger'" cols="2">
+                <v-label class="text-h6 mb-2">Droger cijfer</v-label>
+                <v-radio-group
+                  v-model="drogerCijfer"
+                  v-for="c in drogerCijferLijst"
+                  :key="c"
+                  density="compact"
+                  hide-details
+                >
+                  <v-radio :label="c" :value="c" />
+                </v-radio-group>
+              </v-col>
+            </transition>
 
             <!-- Kristallisatorenlijst -->
 
-            <v-col v-if="machine === 'Kris'" cols="3">
-              <v-label class="text-h6 mb-2">Kristallisator</v-label>
-              <v-radio-group
-                v-model="kris"
-                v-for="k in krisLijst"
-                :key="k"
-                density="compact"
-                hide-details
-              >
-                <v-radio :label="k" :value="k" />
-              </v-radio-group>
-            </v-col>
+            <transition name="fade-slide" mode="out-in">
+              <v-col v-if="machine === 'Kris'" cols="3">
+                <v-label class="text-h6 mb-2">Kristallisator</v-label>
+                <v-radio-group
+                  v-model="kris"
+                  v-for="k in krisLijst"
+                  :key="k"
+                  density="compact"
+                  hide-details
+                >
+                  <v-radio :label="k" :value="k" />
+                </v-radio-group>
+              </v-col>
+            </transition>
 
             <!-- Buhlerlijst -->
 
-            <v-col v-if="machine === 'Buhler'" cols="3">
-              <v-label class="text-h6 mb-2">Buhler tank</v-label>
-              <v-radio-group v-model="buhler" density="compact">
-                <v-radio label="BT01" value="BT01"></v-radio>
-                <v-radio label="BT02" value="BT02"></v-radio>
-                <v-radio label="BT03" value="BT03"></v-radio>
-                <v-radio label="BT04" value="BT04"></v-radio>
-              </v-radio-group>
-            </v-col>
+            <transition name="fade-slide" mode="out-in">
+              <v-col v-if="machine === 'Buhler'" cols="3">
+                <v-label class="text-h6 mb-2">Buhler tank</v-label>
+                <v-radio-group v-model="buhler" density="compact">
+                  <v-radio label="BT01" value="BT01"></v-radio>
+                  <v-radio label="BT02" value="BT02"></v-radio>
+                  <v-radio label="BT03" value="BT03"></v-radio>
+                  <v-radio label="BT04" value="BT04"></v-radio>
+                </v-radio-group>
+              </v-col>
+            </transition>
 
             <!-- 3C-Bunkerlijst -->
 
-            <v-col v-if="machine === '3C-Bunker'" cols="3">
-              <v-label class="text-h6 mb-2">3C-Bunker</v-label>
-              <v-select
-                label="Kies 3C-Bunker"
-                v-model="CBunker"
-                :items="CBunkerLijst"
-                :rules="[(v) => !!v || 'You must agree to continue!']"
-              ></v-select>
-            </v-col>
+            <transition name="fade-slide" mode="out-in">
+              <v-col v-if="machine === '3C-Bunker'" cols="3">
+                <v-label class="text-h6 mb-2">3C-Bunker</v-label>
+                <v-select
+                  label="Kies 3C-Bunker"
+                  v-model="CBunker"
+                  :items="CBunkerLijst"
+                  :rules="[(v) => !!v || 'You must agree to continue!']"
+                ></v-select>
+              </v-col>
+            </transition>
 
             <!-- Mengerlijst -->
 
-            <v-col cols="3" v-if="machine === 'Menger'">
-              <v-label class="text-h6 mb-2">Menger</v-label>
-              <v-select
-                label="Kies Menger"
-                v-model="menger"
-                :items="mengerLijst"
-              ></v-select>
-            </v-col>
+            <transition name="fade-slide" mode="out-in">
+              <v-col cols="3" v-if="machine === 'Menger'">
+                <v-label class="text-h6 mb-2">Menger</v-label>
+                <v-select
+                  label="Kies Menger"
+                  v-model="menger"
+                  :items="mengerLijst"
+                ></v-select>
+              </v-col>
+            </transition>
 
-            <v-col v-if="datumToggle" cols="3" class="text-center">
-              <v-label class="text-h6 mb-3">Kies Periode</v-label>
-              <vue-date-picker
-                range
-                v-model="date"
-                inline
-                auto-apply
-                min-range="1"
-              />
-            </v-col>
+            <!-- Datumfilter -->
+
+            <transition name="fade-slide" mode="out-in">
+              <v-col v-if="datumToggle" cols="3" class="text-center">
+                <v-label class="text-h6 mb-3">Kies Periode</v-label>
+                <vue-date-picker
+                  range
+                  v-model="date"
+                  inline
+                  auto-apply
+                  min-range="1"
+                />
+              </v-col>
+            </transition>
           </v-row>
 
           <!-- Verslag text -->
 
-          <v-row v-if="textToggle">
-            <v-textarea
-              label="Vul zoektermen in"
-              auto-grow
-              variant="outlined"
-              rows="3"
-              row-height="25"
-              shaped
-              counter
-              v-model="reportText"
-            />
-          </v-row>
+          <transition name="fade-slide" mode="out-in">
+            <v-row v-if="textToggle">
+              <v-textarea
+                label="Vul zoektermen in"
+                auto-grow
+                variant="outlined"
+                rows="3"
+                row-height="25"
+                shaped
+                counter
+                v-model="reportText"
+              />
+            </v-row>
+          </transition>
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -217,7 +238,7 @@ import { useStore } from "vuex";
 const store = useStore();
 
 const onderwerpToggle = ref(false);
-const apparaatToggle = ref(false);
+const installatieToggle = ref(false);
 const textToggle = ref(false);
 const datumToggle = ref(false);
 //const oCPunt = ref(null);
@@ -238,7 +259,7 @@ const menger = ref("");
 const buhler = ref("");
 
 watch(
-  () => apparaatToggle.value,
+  () => installatieToggle.value,
   (newValue) => {
     if (!newValue) {
       drogerLetter.value = "";
@@ -366,3 +387,19 @@ const activeUser = computed(function () {
   return store.getters["userModule/getActiveUser"];
 });
 </script>
+
+<style>
+.fade-slide-enter {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.fade-slide-leave-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.fade-slide-enter-from,
+.fade-slide-leave {
+  opacity: 0;
+  transform: translateY(-21px);
+}
+</style>

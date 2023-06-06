@@ -22,7 +22,7 @@
             </v-radio-group>
           </v-col>
           <v-col cols="3">
-            <v-label class="text-h6 mb-2">Apparaat</v-label>
+            <v-label class="text-h6 mb-2">Installatie</v-label>
             <v-radio-group v-model="machine" density="compact">
               <v-radio label="Droger" value="Droger"></v-radio>
               <v-radio label="Kristallisator" value="Kris"></v-radio>
