@@ -34,81 +34,88 @@
           </v-col>
 
           <!-- Drogerlijst -->
-
-          <v-col v-if="machine === 'Droger'" cols="2">
-            <v-label class="text-h6 mb-2">Droger letter</v-label>
-            <v-radio-group
-              v-model="drogerLetter"
-              v-for="l in drogerLetterLijst"
-              :key="l"
-              density="compact"
-              hide-details
-            >
-              <v-radio :label="l" :value="l" />
-            </v-radio-group>
-          </v-col>
-          <v-col v-if="machine === 'Droger'" cols="2">
-            <v-label class="text-h6 mb-2">Droger cijfer</v-label>
-            <v-radio-group
-              v-model="drogerCijfer"
-              v-for="c in drogerCijferLijst"
-              :key="c"
-              density="compact"
-              hide-details
-            >
-              <v-radio :label="c" :value="c" />
-            </v-radio-group>
-          </v-col>
+          <transition name="fade-slide" mode="out-in">
+            <v-col v-if="machine === 'Droger'" cols="2">
+              <v-label class="text-h6 mb-2">Droger letter</v-label>
+              <v-radio-group
+                v-model="drogerLetter"
+                v-for="l in drogerLetterLijst"
+                :key="l"
+                density="compact"
+                hide-details
+              >
+                <v-radio :label="l" :value="l" />
+              </v-radio-group>
+            </v-col>
+          </transition>
+          <transition name="fade-slide" mode="out-in">
+            <v-col v-if="machine === 'Droger'" cols="2">
+              <v-label class="text-h6 mb-2">Droger cijfer</v-label>
+              <v-radio-group
+                v-model="drogerCijfer"
+                v-for="c in drogerCijferLijst"
+                :key="c"
+                density="compact"
+                hide-details
+              >
+                <v-radio :label="c" :value="c" />
+              </v-radio-group>
+            </v-col>
+          </transition>
 
           <!-- Kristallisatorenlijst -->
-
-          <v-col v-if="machine === 'Kris'" cols="2">
-            <v-label class="text-h6 mb-2">Kristallisator</v-label>
-            <v-radio-group
-              v-model="kris"
-              v-for="k in krisLijst"
-              :key="k"
-              density="compact"
-              hide-details
-            >
-              <v-radio :label="k" :value="k" />
-            </v-radio-group>
-          </v-col>
+          <transition name="fade-slide" mode="out-in">
+            <v-col v-if="machine === 'Kris'" cols="2">
+              <v-label class="text-h6 mb-2">Kristallisator</v-label>
+              <v-radio-group
+                v-model="kris"
+                v-for="k in krisLijst"
+                :key="k"
+                density="compact"
+                hide-details
+              >
+                <v-radio :label="k" :value="k" />
+              </v-radio-group>
+            </v-col>
+          </transition>
 
           <!-- Buhlerlijst -->
-
-          <v-col v-if="machine === 'Buhler'" cols="3">
-            <v-label class="text-h6 mb-2">Buhler tank</v-label>
-            <v-radio-group v-model="buhler" density="compact">
-              <v-radio label="BT01" value="BT01"></v-radio>
-              <v-radio label="BT02" value="BT02"></v-radio>
-              <v-radio label="BT03" value="BT03"></v-radio>
-              <v-radio label="BT04" value="BT04"></v-radio>
-            </v-radio-group>
-          </v-col>
+          <transition name="fade-slide" mode="out-in">
+            <v-col v-if="machine === 'Buhler'" cols="3">
+              <v-label class="text-h6 mb-2">Buhler tank</v-label>
+              <v-radio-group v-model="buhler" density="compact">
+                <v-radio label="BT01" value="BT01"></v-radio>
+                <v-radio label="BT02" value="BT02"></v-radio>
+                <v-radio label="BT03" value="BT03"></v-radio>
+                <v-radio label="BT04" value="BT04"></v-radio>
+              </v-radio-group>
+            </v-col>
+          </transition>
 
           <!-- 3C-Bunkerlijst -->
-
-          <v-col v-if="machine === '3C-Bunker'" cols="2">
-            <v-label class="text-h6 mb-2">3C-Bunker</v-label>
-            <v-select
-              label="Kies 3C-Bunker"
-              v-model="CBunker"
-              :items="CBunkerLijst"
-              :rules="[(v) => !!v || 'You must agree to continue!']"
-            ></v-select>
-          </v-col>
+          <transition name="fade-slide" mode="out-in">
+            <v-col v-if="machine === '3C-Bunker'" cols="2">
+              <v-label class="text-h6 mb-2">3C-Bunker</v-label>
+              <v-select
+                label="Kies 3C-Bunker"
+                v-model="CBunker"
+                :items="CBunkerLijst"
+                :rules="[(v) => !!v || 'You must agree to continue!']"
+              ></v-select>
+            </v-col>
+          </transition>
 
           <!-- Mengerlijst -->
-
-          <v-col cols="2" v-if="machine === 'Menger'">
-            <v-label class="text-h6 mb-2">Menger</v-label>
-            <v-select
-              label="Kies Menger"
-              v-model="menger"
-              :items="mengerLijst"
-            ></v-select>
-          </v-col>
+          <transition name="fade-slide" mode="out-in">
+            <v-col cols="2" v-if="machine === 'Menger'">
+              <v-label class="text-h6 mb-2">Menger</v-label>
+              <v-select
+                label="Kies Menger"
+                v-model="menger"
+                :items="mengerLijst"
+              ></v-select>
+            </v-col>
+          </transition>
         </v-row>
 
         <!-- Verslag text -->
@@ -257,3 +264,19 @@ const submitReport = () => {
   store.dispatch("reportModule/submitReport", report);
 };
 </script>
+
+<style>
+.fade-slide-leave-active {
+  transition: opacity 0s, transform 0s;
+}
+
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-21px);
+}
+
+.fade-slide-enter-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+</style>

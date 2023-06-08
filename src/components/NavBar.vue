@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar>
+  <v-app-bar class="no-print">
     <!-- <v-icon><v-img src="../assets/MPE-logo.png" /></v-icon> -->
     <v-btn prepend-icon="mdi-home" to="/">Home</v-btn>
     <v-btn
@@ -19,7 +19,7 @@
     >
 
     <v-spacer></v-spacer>
-
+    <v-icon class="mr-3" icon="mdi-theme-light-dark" @click="toggleTheme" />
     <v-label :text="user.firstName + ' ' + user.lastName" class="text-h6" />
     <v-btn
       prepend-icon="mdi-logout"
@@ -34,9 +34,15 @@
 
 <script setup>
 import { computed } from "vue";
+import { useTheme } from "vuetify/lib/framework.mjs";
 import { useStore } from "vuex";
 
+const theme = useTheme();
 const store = useStore();
+
+const toggleTheme = () => {
+  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+};
 
 const logOut = () => {
   store.dispatch("userModule/logOut");

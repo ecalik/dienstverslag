@@ -40,7 +40,7 @@
         <v-card class="w-66 pt-7 mx-auto pa-7 mt-5 mb-7" elevation="7">
           <v-card-title>Overzicht van alle gebruikers</v-card-title>
           <v-divider />
-          <v-expansion-panels variant="popout" class="mt-3">
+          <v-expansion-panels variant="popout" class="mt-3" v-model="panel">
             <v-expansion-panel
               v-for="user in users"
               :key="user._id"
@@ -71,26 +71,39 @@
                   {{ user.firstName + " " + user.lastName }}
                 </v-expansion-panel-title>
                 <v-expansion-panel-text>
-                  <v-text-field
-                    label="Voer nieuw wachtwoord in"
-                    density="compact"
-                    v-model="pswUpdate"
-                    :type="show1 ? 'text' : 'password'"
-                    :append-inner-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append-inner="show1 = !show1"
-                  />
-                  <div class="d-flex justify-space-between">
-                    <v-btn
-                      @click="updatePw(user._id)"
-                      text="WW wijzigen"
-                      variant="outlined"
+                  <v-form
+                    v-model="valid"
+                    @submit.prevent="handleSubmit(user._id)"
+                  >
+                    <v-text-field
+                      label="Voer nieuw wachtwoord in"
+                      density="compact"
+                      v-model="pswUpdate"
+                      :rules="[
+                        lengthRule,
+                        uppercaseRule,
+                        lowercaseRule,
+                        numberRule,
+                        specialCharRule,
+                      ]"
+                      :type="show1 ? 'text' : 'password'"
+                      :append-inner-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                      @click:append-inner="show1 = !show1"
                     />
-                    <v-btn
-                      @click="openDialog(user)"
-                      text="Gebruiker verwijderen"
-                      variant="outlined"
-                    />
-                  </div>
+                    <div class="d-flex justify-space-between">
+                      <v-btn
+                        type="submit"
+                        text="WW wijzigen"
+                        variant="outlined"
+                      />
+                      <v-btn
+                        @click="openDialog(user)"
+                        type="button"
+                        text="Gebruiker verwijderen"
+                        variant="outlined"
+                      />
+                    </div>
+                  </v-form>
                 </v-expansion-panel-text>
               </v-card>
             </v-expansion-panel>
@@ -102,7 +115,11 @@
         <v-card class="text-center pa-2 w-50 mx-auto mt-3" elevation="7">
           <v-card-title>Voeg een nieuwe gebruiker toe</v-card-title>
           <v-divider />
-          <v-form @submit.prevent="signup()" class="pa-3 pt-7">
+          <v-form
+            @submit.prevent="signup()"
+            class="pa-3 pt-7"
+            v-model="validSignup"
+          >
             <v-text-field
               density="compact"
               label="Voornaam"
@@ -128,6 +145,13 @@
               density="compact"
               label="Wachtwoord"
               v-model="password"
+              :rules="[
+                lengthRule,
+                uppercaseRule,
+                lowercaseRule,
+                numberRule,
+                specialCharRule,
+              ]"
               :type="show ? 'text' : 'password'"
               :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
               @click:append-inner="show = !show"
@@ -177,6 +201,8 @@ const openDialog = (user) => {
   selectedUser.value = user;
 };
 
+const panel = ref([]);
+
 const users = computed(function () {
   let arr = store.getters["userModule/getUsers"];
   arr.forEach((element) => {
@@ -197,6 +223,37 @@ const users = computed(function () {
   });
 });
 
+const lengthRule = ref(
+  (v) => (v && v.length >= 8) || "Password must be at least 8 characters"
+);
+const uppercaseRule = ref(
+  (v) =>
+    /[A-Z]/.test(v) || "Password must contain at least one uppercase letter"
+);
+const lowercaseRule = ref(
+  (v) =>
+    /[a-z]/.test(v) || "Password must contain at least one lowercase letter"
+);
+const numberRule = ref(
+  (v) => /[0-9]/.test(v) || "Password must contain at least one number"
+);
+const specialCharRule = ref(
+  (v) =>
+    /[!@#$%^&*]/.test(v) ||
+    "Password must contain at least one special character"
+);
+
+const valid = ref();
+const validSignup = ref();
+
+const handleSubmit = async (userId) => {
+  if (valid.value) {
+    // Valid form, perform the update
+    updatePw(userId);
+    panel.value = [];
+  }
+};
+
 const dialog = ref(false);
 const tab = ref(null);
 const email = ref();
@@ -207,18 +264,20 @@ const role = ref();
 const shift = ref();
 const roleList = ref(["user", "admin", "readOnly"]);
 const shiftList = ref(["DD", "E", "F", "G", "H", "K"]);
-const pswUpdate = ref("");
+const pswUpdate = ref();
 
 const signup = () => {
-  let user = {};
-  user.firstName = firstName.value;
-  user.lastName = lastName.value;
-  user.email = email.value;
-  user.password = password.value;
-  user.role = role.value;
-  user.shift = shift.value;
-  store.dispatch("userModule/addUser", user);
-  tab.value = 1;
+  if (validSignup.value) {
+    let user = {};
+    user.firstName = firstName.value;
+    user.lastName = lastName.value;
+    user.email = email.value;
+    user.password = password.value;
+    user.role = role.value;
+    user.shift = shift.value;
+    store.dispatch("userModule/addUser", user);
+    tab.value = 1;
+  }
 };
 
 const updatePw = (uid) => {

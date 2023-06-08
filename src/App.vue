@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="main-app">
     <nav-bar v-if="isLoggedIn" />
     <v-main>
       <!-- <reports-view /> -->
@@ -30,6 +30,18 @@ const isLoggedIn = computed(() => {
 </script>
 
 <style>
+@media print {
+  /* Custom styles for print */
+  .print-template {
+    /* Custom styles for the print template */
+  }
+  .no-print {
+    display: none;
+  }
+}
+.v-container {
+  min-width: 1050px;
+}
 .fade-slide-enter-active {
   transition: opacity 0.2s, transform 0.2s;
 }

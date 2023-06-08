@@ -1,14 +1,43 @@
 <template>
   <v-container class="text-center">
-    <div class="mb-5 mt-5 text-h4">Overzicht Dienstverslagen</div>
+    <div class="mb-5 mt-5 text-h4 no-print">Overzicht Dienstverslagen</div>
+
+    <!-- Print template -->
+    <div id="printTemplate" class="print-template mt-n15">
+      <div class="mb-5 mt-5 text-h5">
+        Lijst met geselecteerde dienstverslagen
+      </div>
+      <v-table>
+        <thead>
+          <tr>
+            <th class="text-left">Onderwerp</th>
+            <th class="text-left">Installatie</th>
+            <th class="text-left">Verslag</th>
+            <th class="text-left">Ploeg</th>
+            <th class="text-left">OC Punt</th>
+            <th class="text-left">Datum</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="report in selectedReports" :key="report._id">
+            <td class="text-left">{{ report.subject }}</td>
+            <td class="text-left">{{ report.machine }}</td>
+            <td class="text-left">{{ report.reportText }}</td>
+            <td class="text-left">{{ report.shift }}</td>
+            <td class="text-left">{{ report.oCPunt }}</td>
+            <td class="text-left">{{ report.date }}</td>
+          </tr>
+        </tbody>
+      </v-table>
+    </div>
     <v-expansion-panels
       :style="{ zoom: 0.75 }"
-      class="pa-1 mb-2 w-66 mx-auto text-left"
+      class="pa-1 mb-2 w-66 mx-auto text-left no-print"
     >
       <v-expansion-panel>
         <v-expansion-panel-title>
           <v-icon icon="mdi-magnify" class="mr-3" />
-          <span class="text-h6">Zoeken</span>
+          <span class="text-h5 ml-3">Zoeken</span>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div class="d-flex justify-space-between">
@@ -152,6 +181,7 @@
                 <v-label class="text-h6 mb-3">Kies Periode</v-label>
                 <vue-date-picker
                   range
+                  :enable-time-picker="false"
                   v-model="date"
                   inline
                   auto-apply
@@ -181,13 +211,38 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
+    <!-- Print button -->
+    <v-btn
+      prepend-icon="mdi-check"
+      class="no-print mb-5 mr-10 mt-1"
+      @click="toggleSelectPrint()"
+      text
+      >Verslagen selecteren</v-btn
+    >
+    <v-btn
+      prepend-icon="mdi-printer"
+      class="no-print mb-5 ml-10 mt-1"
+      @click="printReports"
+      text
+      >Selectie printen</v-btn
+    >
+
     <v-card
       v-for="report in filteredReports"
       :key="report._id"
       elevation="1"
-      class="mb-2 w-66 mx-auto text-left"
+      class="mb-2 w-66 mx-auto text-left no-print"
     >
       <v-card-item class="mt-3 pr-7">
+        <template v-slot:prepend>
+          <transition name="fade-slide" mode="out-in">
+            <v-checkbox
+              v-if="selectPrint"
+              class="ml-n3 mb-n5"
+              v-model="report.print"
+            />
+          </transition>
+        </template>
         <template v-slot:append>
           <div class="text-right">
             <div>
@@ -209,7 +264,7 @@
         </v-card-title>
         <v-card-subtitle>{{ report.machine }}</v-card-subtitle>
       </v-card-item>
-      <v-card-text>{{ report.reportText }} </v-card-text>
+      <v-card-text class="ml-7">{{ report.reportText }} </v-card-text>
       <v-card-actions
         v-if="
           activeUser.id === report.creator &&
@@ -232,7 +287,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
@@ -317,6 +372,35 @@ const machineSpecifiek = computed(function () {
   }
 });
 
+const selectedReports = ref([]);
+
+const selectPrint = ref(false);
+
+const toggleSelectPrint = () => {
+  selectPrint.value = !selectPrint.value;
+  if (!selectPrint.value) {
+    filteredReports.value.map((obj) => (obj.print = false));
+  }
+};
+
+const printReports = () => {
+  // Copy selected reports to the separate array
+  selectedReports.value = filteredReports.value.filter(function (el) {
+    return el.print;
+  });
+
+  // Hide the regular display and show the print template
+  nextTick(() => {
+    const printTemplate = document.querySelector(".print-template");
+    printTemplate.style.display = "block";
+    window.print();
+    printTemplate.style.display = "none";
+    selectedReports.value = []; // Clear the selected reports array
+    filteredReports.value.map((obj) => (obj.print = false));
+    toggleSelectPrint();
+  });
+};
+
 const drogerLetterLijst = ref(["G", "H", "L", "O", "P"]);
 const drogerCijferLijst = computed(() => {
   return drogerLetter.value !== "O"
@@ -343,6 +427,7 @@ const mengerLijst = computed(() => {
 });
 
 const filteredReports = computed(function () {
+  reports.value.map((obj) => ({ ...obj, print: false }));
   const filteredBySubject = reports.value.filter(function (report) {
     return report.subject.indexOf(onderwerp.value) !== -1;
   });
@@ -388,18 +473,18 @@ const activeUser = computed(function () {
 });
 </script>
 
-<style>
-.fade-slide-enter {
-  transition: opacity 0.2s, transform 0.2s;
+<style scoped>
+.print-template {
+  display: none;
 }
 
-.fade-slide-leave-active {
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.fade-slide-enter-from,
-.fade-slide-leave {
-  opacity: 0;
-  transform: translateY(-21px);
+@media print {
+  /* Custom styles for print */
+  .print-template {
+    /* Custom styles for the print template */
+  }
+  .no-print {
+    display: none;
+  }
 }
 </style>
