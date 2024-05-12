@@ -5,7 +5,15 @@ export default {
   getUsers(state) {
     return state.users;
   },
-  getToken(state) {
-    return state.currentToken;
+  getLoginError(state) {
+    return state.loginError;
+  },
+
+  getServerTimeout(state) {
+    return state.serverTimeout;
+  },
+
+  getIsLoading(state) {
+    return state.isLoading;
   },
 };

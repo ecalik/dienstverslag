@@ -25,6 +25,7 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
+      credentials: "omit",
     })
       .then((res) => res.json())
       .then((users) => {
@@ -37,29 +38,56 @@ export default {
         console.log(err);
       });
   },
+
+  toggleLoginError({ commit }) {
+    commit("toggleLoginError");
+  },
+
+  toggleServerTimeout({ commit }) {
+    commit("toggleServerTimeout");
+  },
+
+  toggleIsLoading({ commit }) {
+    commit("toggleIsLoading");
+  },
+
   userSignin({ commit, dispatch }, payload) {
+    dispatch("toggleIsLoading");
     fetch("http://localhost:3000/user/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
+      credentials: "omit",
     })
-      .then((res) => res.json())
-      .then((result) => {
-        socket.connect();
-        const { token } = result;
-        const tokenClaims = parseJwt(token);
-        //console.log(tokenObject);
-        tokenClaims.isLoggedIn = true;
-        localStorage.setItem("tokenClaims", JSON.stringify(tokenClaims));
-        localStorage.setItem("token", token);
-        commit("setActiveUser", tokenClaims);
-        dispatch("reportModule/getReports", {}, { root: true });
-        router.replace("/");
-        if (tokenClaims.role === "admin") {
-          dispatch("getUsers");
+      .then((res) => {
+        if (res.status === 401) {
+          dispatch("toggleLoginError");
+          dispatch("toggleIsLoading");
+          return;
+        } else if (res.status === 500) {
+          dispatch("toggleServerTimeout");
+          dispatch("toggleIsLoading");
+          return;
         }
+        res.json().then((result) => {
+          console.log(result);
+          socket.connect();
+          const { token } = result;
+          const tokenClaims = parseJwt(token);
+          //console.log(tokenObject);
+          tokenClaims.isLoggedIn = true;
+          localStorage.setItem("tokenClaims", JSON.stringify(tokenClaims));
+          localStorage.setItem("token", token);
+          commit("setActiveUser", tokenClaims);
+          dispatch("reportModule/getReports", {}, { root: true });
+          dispatch("toggleIsLoading");
+          router.replace("/");
+          if (tokenClaims.role === "admin") {
+            dispatch("getUsers");
+          }
+        });
       })
       .catch((err) => console.log(err));
   },
@@ -73,6 +101,7 @@ export default {
         Authorization: "Bearer " + token,
       },
       body: JSON.stringify(payload),
+      credentials: "omit",
     })
       .then((res) => {
         console.log(res);
@@ -92,6 +121,7 @@ export default {
         Authorization: "Bearer " + token,
       },
       body: JSON.stringify({ password: payload.newPw }),
+      credentials: "omit",
     })
       .then((res) => {
         console.log(res);
@@ -108,6 +138,7 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
+      credentials: "omit",
     })
       .then((res) => {
         console.log(res);

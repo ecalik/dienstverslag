@@ -8,12 +8,21 @@ export default {
     state.activeUser.shift = token.shift;
     state.activeUser.isLoggedIn = token.isLoggedIn;
   },
-  setToken(state, payload) {
-    console.log(payload);
-    state.currentToken = payload;
-  },
+
   setUsers(state, payload) {
     state.users = [...payload];
+  },
+
+  toggleLoginError(state) {
+    state.loginError = !state.loginError;
+  },
+
+  toggleServerTimeout(state) {
+    state.serverTimeout = !state.serverTimeout;
+  },
+
+  toggleIsLoading(state) {
+    state.isLoading = !state.isLoading;
   },
 };
 

@@ -2,7 +2,6 @@
   <v-app class="main-app">
     <nav-bar v-if="isLoggedIn" />
     <v-main>
-      <!-- <reports-view /> -->
       <router-view v-slot="{ Component }">
         <transition name="fade-slide" mode="out-in">
           <component :is="Component" />
@@ -40,7 +39,7 @@ const isLoggedIn = computed(() => {
   }
 }
 .v-container {
-  min-width: 1050px;
+  min-width: 1080px;
 }
 .fade-slide-enter-active {
   transition: opacity 0.2s, transform 0.2s;

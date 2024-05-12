@@ -1,7 +1,41 @@
 <template>
-  <v-container class="text-center pt-15">
-    <div class="mb-5 text-h4">Inloggen</div>
-    <v-card width="300" class="mx-auto pa-5">
+  <v-container class="text-center pt-15 mt-15">
+    <v-dialog v-model="loginError" persistent width="auto" class="mt-n15">
+      <v-card class="mt-n15">
+        <v-card-text> Inloggen mislukt, probeer het opnieuw! </v-card-text>
+        <v-card-actions>
+          <v-btn
+            class="mx-auto"
+            color="blue-darken-1"
+            variant="text"
+            block
+            @click="toggleLoginError()"
+          >
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="serverTimeout" persistent width="auto" class="mt-n15">
+      <v-card class="mt-n15">
+        <v-card-text>
+          De server stuurt geen respons, probeer het later opnieuw
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            class="mx-auto"
+            color="blue-darken-1"
+            variant="text"
+            block
+            @click="toggleServerTimeout()"
+          >
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-card width="300" class="mx-auto pa-5 elevation-5">
+      <v-card-title class="text-h4">Inloggen</v-card-title>
       <v-card-item> </v-card-item>
       <v-form @submit.prevent="signin()">
         <v-text-field label="E-mail" v-model="email" type="email" />
@@ -9,18 +43,24 @@
           label="Wachtwoord"
           v-model="password"
           :type="show ? 'text' : 'password'"
-          :append-inner-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+          :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
           class="input-group--focused"
           @click:append-inner="show = !show"
         />
         <v-btn type="submit" text="Inloggen" size="large" class="mb-5" />
       </v-form>
+      <v-progress-linear
+        v-if="isLoading"
+        color="blue-lighten-3"
+        indeterminate
+        :height="5"
+      ></v-progress-linear>
     </v-card>
   </v-container>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
@@ -29,40 +69,30 @@ const show = ref(false);
 const email = ref();
 const password = ref();
 
+const loginError = computed(function () {
+  return store.getters["userModule/getLoginError"];
+});
+
+const serverTimeout = computed(function () {
+  return store.getters["userModule/getServerTimeout"];
+});
+
+const isLoading = computed(function () {
+  return store.getters["userModule/getIsLoading"];
+});
+
+const toggleLoginError = () => {
+  store.dispatch("userModule/toggleLoginError");
+};
+
+const toggleServerTimeout = () => {
+  store.dispatch("userModule/toggleServerTimeout");
+};
+
 const signin = () => {
   let user = {};
   user.email = email.value;
   user.password = password.value;
   store.dispatch("userModule/userSignin", user);
 };
-
-// const firstName = ref();
-// const lastName = ref();
-// const role = ref();
-// const shift = ref();
-// const roleList = ref(["user", "admin"]);
-// const shiftList = ref(["DD", "E", "F", "G", "H", "K"]);
-
-// const signup = () => {
-//   let user = {};
-//   user.firstName = firstName.value;
-//   user.lastName = lastName.value;
-//   user.email = email.value;
-//   user.password = password.value;
-//   user.role = role.value;
-//   user.shift = shift.value;
-//   fetch("http://localhost:3000/user/signup", {
-//     method: "PUT",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(user),
-//   })
-//     .then((result) => {
-//       console.log(JSON.stringify(user));
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// };
 </script>

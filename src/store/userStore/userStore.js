@@ -5,7 +5,9 @@ import userMutations from "./userMutations";
 export default {
   namespaced: true,
   state: {
-    currentToken: null,
+    loginError: false,
+    serverTimeout: false,
+    isLoading: false,
     activeUser: {
       id: "",
       firstName: "",

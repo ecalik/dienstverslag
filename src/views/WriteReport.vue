@@ -24,11 +24,15 @@
           <v-col cols="3">
             <v-label class="text-h6 mb-2">Installatie</v-label>
             <v-radio-group v-model="machine" density="compact">
-              <v-radio label="Droger" value="Droger"></v-radio>
-              <v-radio label="Kristallisator" value="Kris"></v-radio>
               <v-radio label="3C-Bunker" value="3C-Bunker"></v-radio>
-              <v-radio label="Menger" value="Menger"></v-radio>
               <v-radio label="Buhler" value="Buhler"></v-radio>
+              <v-radio label="Droger" value="Droger"></v-radio>
+              <v-radio
+                label="Koelwatersysteem"
+                value="Koelwatersysteem"
+              ></v-radio>
+              <v-radio label="Kristallisator" value="Kris"></v-radio>
+              <v-radio label="Menger" value="Menger"></v-radio>
               <v-radio label="Overig" value=""></v-radio>
             </v-radio-group>
           </v-col>
@@ -100,7 +104,6 @@
                 label="Kies 3C-Bunker"
                 v-model="CBunker"
                 :items="CBunkerLijst"
-                :rules="[(v) => !!v || 'You must agree to continue!']"
               ></v-select>
             </v-col>
           </transition>
@@ -202,6 +205,8 @@ const machineSpecifiek = computed(function () {
     case "Kris":
       return kris.value;
     case "3C-Bunker":
+      return CBunker.value;
+    case "Koelwatersysteem":
       return CBunker.value;
     case "Menger":
       return menger.value;

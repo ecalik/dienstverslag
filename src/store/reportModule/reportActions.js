@@ -10,6 +10,7 @@ export default {
         Authorization: "Bearer " + token,
       },
       body: JSON.stringify(payload),
+      credentials: "omit",
     })
       .then((res) => res.json())
       .then(() => {
@@ -28,6 +29,7 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
+      credentials: "omit",
     })
       .then((res) => {
         console.log(res);
@@ -45,6 +47,7 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
+      credentials: "omit",
     })
       .then((res) => res.json())
       .then((reports) => {
@@ -66,6 +69,7 @@ export default {
         Authorization: "Bearer " + token,
       },
       body: JSON.stringify({ userId: payload.userId }),
+      credentials: "omit",
     }).catch((err) => {
       console.log(err);
     });

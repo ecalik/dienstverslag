@@ -268,7 +268,7 @@
       <v-card-actions
         v-if="
           activeUser.id === report.creator &&
-          Date.now() < new Date(report.createdAt).getTime() + 3600000
+          Date.now() < new Date(report.createdAt).getTime() + 28800000
         "
       >
         <div class="d-block w-100">

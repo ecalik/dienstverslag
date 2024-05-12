@@ -27,7 +27,6 @@
         </v-card>
       </v-dialog>
     </div>
-
     <v-tabs v-model="tab">
       <div class="mx-auto">
         <v-tab value="1">Overzicht Gebruikers</v-tab>
@@ -75,10 +74,25 @@
                     v-model="valid"
                     @submit.prevent="handleSubmit(user._id)"
                   >
+                    <v-chip
+                      label
+                      class="mb-2 pt-1"
+                      :color="
+                        user.role === 'admin'
+                          ? 'purple-darken-1'
+                          : user.role === 'user'
+                          ? 'blue-darken-1'
+                          : 'green-darken-1'
+                      "
+                    >
+                      {{ user.email }}
+                    </v-chip>
+                    <v-divider class="mb-2" />
                     <v-text-field
                       label="Voer nieuw wachtwoord in"
                       density="compact"
                       v-model="pswUpdate"
+                      variant="underlined"
                       :rules="[
                         lengthRule,
                         uppercaseRule,
